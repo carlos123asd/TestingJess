@@ -159,19 +159,25 @@ class Room {
     }
 
     static totalOccupancyPercentage(rooms,startDate,endDate){
-        let roomsocuped = 0;
-        for (let index = 0; index < rooms.length; index++) {
-            const room = rooms[index].bookings;
-            for (let index = 0; index < room.length; index++) {
-                const booking = room[index];
-                if((booking.checkIn <= startDate || booking.checkIn >= startDate || 
-                    booking.checkIn <= endDate) && (booking.checkOut >= startDate ||
-                    booking.checkOut <= endDate || booking.checkOut >= endDate)){
-                        roomsocuped++
+        if (rooms === undefined || startDate === undefined 
+            || endDate === undefined, typeof(rooms) === 'number', typeof(startDate) === 'number', typeof(endDate) === 'number'
+            || typeof(rooms) === 'string' || typeof(startDate) === 'string' || typeof(endDate) === 'string') {
+            return 'Rooms/Date/Date'
+        } else {
+            let roomsocuped = 0;
+            for (let index = 0; index < rooms.length; index++) {
+                const room = rooms[index].bookings;
+                for (let index = 0; index < room.length; index++) {
+                    const booking = room[index];
+                    if((booking.checkIn <= startDate || booking.checkIn >= startDate || 
+                        booking.checkIn <= endDate) && (booking.checkOut >= startDate ||
+                        booking.checkOut <= endDate || booking.checkOut >= endDate)){
+                            roomsocuped++
+                    }
                 }
             }
+            return ((100 * roomsocuped)/rooms.length)
         }
-        return ((100 * roomsocuped)/rooms.length)
     }
     static availableRooms(rooms,startDate,endDate){
         let roomsavailables = []
@@ -229,6 +235,7 @@ dataBooking.forEach((booking) => {
 
 module.exports  = {
     rooms,
-    bookings
+    bookings,
+    Room
 }
 

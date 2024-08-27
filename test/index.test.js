@@ -1,5 +1,5 @@
-const {rooms} = require("../utils/index.js")
-const {bookings} = require("../utils/index.js")
+const {rooms,bookings} = require("../utils/index.js")
+const {Room} = require("../utils/index.js")
 
 
 describe('Func. isOcupied()', () => {
@@ -47,4 +47,20 @@ describe('Func. occupancyPercentage()', () => {
         const result = rooms[0].occupancyPercentage(new Date('2024-08-01'),new Date('2024-08-15'))
         expect(result).toBe(100)
     });
+});
+
+describe('fun. totalOccupancyPercentage', () => {
+    test('of undefined', () => {
+        const result = Room.totalOccupancyPercentage()
+        expect(result).toBe('Rooms/Date/Date')
+    });
+    test('of a string and empty', () => {
+        const result = Room.totalOccupancyPercentage('abcd','')
+        expect(result).toBe('Rooms/Date/Date')
+    });
+    test('of int', () => {
+        const result = Room.totalOccupancyPercentage(12)
+        expect(result).toBe('Rooms/Date/Date')
+    });
+    
 });
