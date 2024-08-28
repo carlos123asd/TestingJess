@@ -145,7 +145,7 @@ class Room {
                 if((new Date(booking.checkin) < startDate && new Date(booking.checkout) > startDate) ||
                 (new Date(booking.checkin) < endDate && new Date(booking.checkout) > endDate) || 
                 (new Date(booking.checkin) < startDate && new Date(booking.checkout) > endDate) ||
-                (new Date(booking.checkout) >= startDate && new Date(booking.checkout) <= endDate)){
+                (new Date(booking.checkin) >= startDate && new Date(booking.checkout) <= endDate)){
                         bookingsocuped.push(booking)
                 }
             }
@@ -160,43 +160,55 @@ class Room {
 
     static totalOccupancyPercentage(rooms,startDate,endDate){
         if (rooms === undefined || startDate === undefined 
-            || endDate === undefined, typeof(rooms) === 'number', typeof(startDate) === 'number', typeof(endDate) === 'number'
+            || endDate === undefined || typeof(rooms) === 'number' || typeof(startDate) === 'number' || typeof(endDate) === 'number'
             || typeof(rooms) === 'string' || typeof(startDate) === 'string' || typeof(endDate) === 'string') {
             return 'Rooms/Date/Date'
         } else {
             let roomsocuped = 0;
             for (let index = 0; index < rooms.length; index++) {
-                const room = rooms[index].bookings;
-                for (let index = 0; index < room.length; index++) {
-                    const booking = room[index];
-                    if((booking.checkIn <= startDate || booking.checkIn >= startDate || 
-                        booking.checkIn <= endDate) && (booking.checkOut >= startDate ||
-                        booking.checkOut <= endDate || booking.checkOut >= endDate)){
+                const bookings = rooms[index].bookings;
+                for (let index = 0; index < bookings.length; index++) {
+                    const booking = bookings[index];
+                    if((new Date(booking.checkin) < startDate && new Date(booking.checkout) > startDate) ||
+                       (new Date(booking.checkin) < endDate && new Date(booking.checkout) > endDate) || 
+                       (new Date(booking.checkin) < startDate && new Date(booking.checkout) > endDate) ||
+                       (new Date(booking.checkin) >= startDate && new Date(booking.checkout) <= endDate)){
                             roomsocuped++
                     }
                 }
             }
-            return ((100 * roomsocuped)/rooms.length)
+            if(bookingsocuped.length > 0){
+                return ((100 * roomsocuped)/rooms.length)
+            }else{
+                return 0
+            }
         }
     }
+
     static availableRooms(rooms,startDate,endDate){
-        let roomsavailables = []
-        let available = true
-        for (let index = 0; index < rooms.length; index++) {
-            const room = rooms[index];
-            for (let index = 0; index < room.bookings.length; index++) {
-                const booking = room.bookings[index];
-                if((booking.checkIn <= startDate || booking.checkIn >= startDate || 
-                    booking.checkIn <= endDate) && (booking.checkOut >= startDate ||
-                    booking.checkOut <= endDate || booking.checkOut >= endDate)){
-                        available = false
+        if (rooms === undefined || startDate === undefined 
+            || endDate === undefined || typeof(rooms) === 'number' || typeof(startDate) === 'number' || typeof(endDate) === 'number'
+            || typeof(rooms) === 'string' || typeof(startDate) === 'string' || typeof(endDate) === 'string') {
+            return 'Rooms/Date/Date'
+        } else {
+            let roomsavailables = []
+            let available = true
+            for (let index = 0; index < rooms.length; index++) {
+                const room = rooms[index];
+                for (let index = 0; index < room.bookings.length; index++) {
+                    const booking = room.bookings[index];
+                    if((new Date(booking.checkin) <= startDate && new Date(booking.checkin) >= startDate) || 
+                       (new Date(booking.checkin) <= endDate && new Date(booking.checkout) >= startDate) ||
+                       (new Date(booking.checkout) <= endDate && new Date(booking.checkout) >= endDate)){
+                            available = false
+                    }
+                }
+                if(available === true){
+                    roomsavailables.push(room)
                 }
             }
-            if(available === true){
-                roomsavailables.push(room)
-            }
+            return roomsavailables
         }
-        return roomsavailables
     }
 }
 
@@ -236,6 +248,7 @@ dataBooking.forEach((booking) => {
 module.exports  = {
     rooms,
     bookings,
-    Room
+    Room,
+    Booking
 }
 

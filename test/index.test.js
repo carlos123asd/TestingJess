@@ -1,5 +1,5 @@
-const {rooms,bookings} = require("../utils/index.js")
-const {Room} = require("../utils/index.js")
+const { rooms, bookings } = require("../utils/index.js")
+const { Room, Booking } = require("../utils/index.js")
 
 
 describe('Func. isOcupied()', () => {
@@ -59,8 +59,45 @@ describe('fun. totalOccupancyPercentage', () => {
         expect(result).toBe('Rooms/Date/Date')
     });
     test('of int', () => {
-        const result = Room.totalOccupancyPercentage(12)
+        const result = Room.totalOccupancyPercentage(12,12,12)
         expect(result).toBe('Rooms/Date/Date')
     });
-    
+    test('with %', () => {
+        const result = Room.totalOccupancyPercentage(rooms,new Date('2024-08-01'),new Date('2024-08-15'))
+        expect(result).toBe(100)
+    });
+    test('0%', () => {
+        const result = Room.totalOccupancyPercentage(rooms,new Date('2023-09-01'),new Date('2023-09-15'))
+        expect(result).toBe(0)
+    });
 });
+
+describe('fun. availableRooms', () => { 
+    test('of undefined', () => {
+        const result = Room.availableRooms()
+        expect(result).toBe('Rooms/Date/Date')
+    });
+    test('of a string and empty', () => {
+        const result = Room.availableRooms('abcd','')
+        expect(result).toBe('Rooms/Date/Date')
+    });
+    test('of int', () => {
+        const result = Room.availableRooms(12,12,12)
+        expect(result).toBe('Rooms/Date/Date')
+    });
+    test('Available', () => {
+        const result = Room.availableRooms(rooms,new Date('2024-08-01'),new Date('2024-08-15'))
+        expect(result).toBe([])
+    });
+    test('No Available', () => {
+        const result = Room.availableRooms(rooms,new Date('2023-09-01'),new Date('2023-09-15'))
+        expect(result).toBe([])
+    });
+ });
+
+ describe('fun. getFee', () => { 
+    test('result of a Booking', () => {
+        const result = Booking.getFee()
+        expect(result).toBe(23)
+    });
+})
